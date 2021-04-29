@@ -19,7 +19,6 @@ app.use(bodyParser.urlencoded({extended:true}))
 app.use(bodyParser.json())
 app.use(express.static('public'))
 
-//Stock details or Home Page
 app.get('/',(req,res)=>{
     db.collection('ladies').find().toArray((err,result)=>{
         if(err) return console.log(err);
@@ -27,17 +26,10 @@ app.get('/',(req,res)=>{
     })
 })
 
-//add product page
 app.get('/create',(req,res)=>{
         res.render('add.ejs')
 })
 
-//update stock page
-/*app.get('/updatestock',(req,res)=>{
-        res.render('update.ejs')
-})*/  
-
-//delete product page
 app.get("/deleteproduct",(req,res)=>{
     db.collection("ladies").find({pid:req.query.pid}).toArray((err,result)=>{
         if(err) return console.log(err);
@@ -46,7 +38,6 @@ app.get("/deleteproduct",(req,res)=>{
     
 }); 
 
-//add new product to collection
 app.post('/AddData',(req,res)=>{
     db.collection('ladies').save(req.body,(err,result)=>{
         if(err)
@@ -56,28 +47,6 @@ app.post('/AddData',(req,res)=>{
     })  
 })
 
-//update the stock
-/*app.put('/update/(:pid)',(req,res)=>{
-    db.collection('ladies').find().toArray((err,result) => {
-        if(err)
-             return console.log(err)
-        for(var i=0;i<result.length;i++){
-            if(result[i].pid==req.body.id){
-                s=result[i].stock
-                break
-            }
-        }
-        db.collection('ladies').findOneAndUpdate({pid:req.body.id} , {
-            $set:{stock: req.body.stock}},{sort:{_id:-1}},
-            (err,result) => {
-                if(err) 
-                    return res.send(err)
-                console.log(req.body.id + 'stock updated')
-                res.redirect('/')
-        })  
-    })
-})*/
-//show stock update page
 app.get("/updatestock",(req,res)=>{
     db.collection("ladies").find({pid:req.query.pid}).toArray((err,result)=>{
         if(err) return console.log(err);
@@ -85,7 +54,7 @@ app.get("/updatestock",(req,res)=>{
     });
     
 });
-//updatestock(post)
+
 app.post('/update',(req,res)=>{
     var edited=parseInt(req.body.stock);
     var edited1=parseInt(req.body.cp);
@@ -98,7 +67,7 @@ app.post('/update',(req,res)=>{
             res.redirect("/");
     });
 });
-//delete product
+
 app.post('/delete',(req,res)=>{
     db.collection('ladies').findOneAndDelete({pid : req.body.id},(err,result)=>{
         if(err)
@@ -108,21 +77,3 @@ app.post('/delete',(req,res)=>{
     })  
 }) 
 
-
-/*app.put('/edit/(:id)', function(req, res, next) { 
-    var errors = req.validationErrors()
-     
-        var ladies = {
-            pid: req.sanitize('pid').escape().trim(),
-            stock: req.sanitize('stock').escape().trim(),
-            cp: req.sanitize('cp').escape().trim()
-        }
-        var o_id = new ObjectId(req.params.id)
-        req.db.collection('ladies').update({"pid": o_id}, user, function(err, result) {
-            if (err)
-                req.flash('error', err)
-            req.flash('success', 'Data updated successfully!')
-            res.render('update.ejs', {stock:data})
-            res.redirect('/stock_details.ejs')
-        })        
-})*/
